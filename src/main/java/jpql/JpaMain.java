@@ -20,21 +20,31 @@ public class JpaMain {
 		tx.begin() ;
 		
 		try {
-			for (int i = 0; i < 100; i++) {
-				Member member = new Member();
-				member.setUsername("member" + i);
-				member.setAge(i);
-				em.persist(member);				
-			}
+			Team team = new Team();
+			team.setName("teamA");
+			em.persist(team);
 			
+			Member member = new Member();
+			member.setUsername("member");
+			member.setAge(10);
+			
+			member.setTeam(team);
+			
+			em.persist(member);
 			
 			em.flush();
 			em.clear();
 			
-			List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
-					.setFirstResult(0)
-					.setMaxResults(10)
-					.getResultList();
+			// inner join (inner 생략 가능)
+//			String query = "select m from Member m inner join m.team t";
+			
+			// outer join (outer 생략 가능)
+//			String query = "select m from Member m left outer join m.team t";
+			
+			// 세타 조인(=croos join?, 막조인?)
+			String query = "select m from Member m, Team t where m.username = t.name";
+			List<Member> result = em.createQuery(query, Member.class) 
+					.getResultList(); 
 			
 			System.out.println("result = " + result.size());
 			for (Member member1 : result) {
