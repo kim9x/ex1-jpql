@@ -26,14 +26,20 @@ public class JpaMain {
 			team.setName("teamA");
 			em.persist(team);
 			
-			Member member = new Member();
-			member.setUsername("包府磊");
-			member.setAge(10);
-			member.setType(MemberType.ADMIN);
+			Member member1 = new Member();
+			member1.setUsername("包府磊1");
+			member1.setAge(10);
+			member1.setType(MemberType.ADMIN);
+			member1.setTeam(team);
+			em.persist(member1);
 			
-			member.setTeam(team);
+			Member member2 = new Member();
+			member2.setUsername("包府磊2");
+			member2.setAge(10);
+			member2.setType(MemberType.ADMIN);
+			member2.setTeam(team);
+			em.persist(member2);
 			
-			em.persist(member);
 			
 			em.flush();
 			em.clear();
@@ -54,7 +60,9 @@ public class JpaMain {
 			
 //			String query = "select coalesce(m.username, '捞抚 绝绰 雀盔') from Member m";
 			
-			String query = "select nullif(m.username, '包府磊') from Member m";
+//			String query = "select nullif(m.username, '包府磊') from Member m";
+			
+			String query = "select function('group_concat', m.username) from Member m";
 
 			List<String> result = em.createQuery(query, String.class)
 					.getResultList();
