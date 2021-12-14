@@ -20,62 +20,26 @@ public class JpaMain {
 		tx.begin() ;
 		
 		try {
+			for (int i = 0; i < 100; i++) {
+				Member member = new Member();
+				member.setUsername("member" + i);
+				member.setAge(i);
+				em.persist(member);				
+			}
 			
-			Member member = new Member();
-			member.setUsername("member1");
-			member.setAge(10);
-			em.persist(member);
 			
 			em.flush();
 			em.clear();
 			
-//			List<Member> result = em.createQuery("select m from Member m", Member.class)
-//					.getResultList();
-//			
-//			Member findMember = result.get(0);
-//			
-//			// update 쿼리가 나간다.(엔티티 프로젝션)
-//			// 즉, 영속성 컨텍스트에서 관리됨.!
-//			findMember.setAge(20);
-			
-			// 엔티티 프로젝션
-			// 쿼리를 "select m.team from Member m"로 작성해도 되긴 하나
-			// 어차피 join 쿼리가 나간다.
-			// 좀 더 명시적(?)으로 잘 보이기 위해 jpql 구문에서도 join을 포함시켜준다.
-//			List<Team> result2 = em.createQuery("select m.team from Member m join m.team t", Team.class)
-//					.getResultList();
-
-			
-			// 임베디드 타입 프로젝션
-//			List<Address> result3 = em.createQuery("select o.address from Order o", Address.class)
-//					.getResultList();
-			
-			// 스칼라 타입 프로젝션(일반 sql문?) 
-			// 아래처럼 distinct 또한 사용 가능하다.
-//			List resultList = em.createQuery("select distinct m.username, m.age from Member m")
-//					.getResultList();
-//			
-//			Object o = resultList.get(0);
-//			Object[] result = (Object[]) o;
-//			System.out.println("result = " + result[0]);
-//			System.out.println("result = " + result[1]);
-			
-			// 아래처럼 List<Object[]>로 받는 방법도 있다.
-//			List<Object[]> resultList = em.createQuery("select distinct m.username, m.age from Member m")
-//					.getResultList();
-//			
-//			Object[] result = resultList.get(0);
-//			System.out.println("result = " + result[0]);
-//			System.out.println("result = " + result[1]);
-			
-			// DTO를 따로 사용하여 받으려면 아래처럼 new operation을 사용해주어야 한다.
-			List<MemberDTO> resultList2 = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+			List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
+					.setFirstResult(0)
+					.setMaxResults(10)
 					.getResultList();
 			
-			MemberDTO memberDTO = resultList2.get(0);
-			
-			System.out.println("memberDTO = " + memberDTO.getUsername());
-			System.out.println("memberDTO = " + memberDTO.getAge());
+			System.out.println("result = " + result.size());
+			for (Member member1 : result) {
+				System.out.println("member1 = " + member1);
+			}
 			
 			tx.commit();
 			
