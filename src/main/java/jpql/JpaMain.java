@@ -9,6 +9,8 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.usertype.UserType;
+
 public class JpaMain {
 	
 	public static void main(String[] args) {
@@ -27,6 +29,7 @@ public class JpaMain {
 			Member member = new Member();
 			member.setUsername("member");
 			member.setAge(10);
+			member.setType(MemberType.ADMIN);
 			
 			member.setTeam(team);
 			
@@ -35,20 +38,24 @@ public class JpaMain {
 			em.flush();
 			em.clear();
 			
-			// inner join (inner 생략 가능)
-//			String query = "select m from Member m inner join m.team t";
 			
-			// outer join (outer 생략 가능)
-//			String query = "select m from Member m left outer join m.team t";
+//			String query = "select m.username, 'HELLO', TRUE from Member m" +
+//						" where m.type = jpql.MemberType.USER";
 			
-			// 세타 조인(=croos join?, 막조인?)
-			String query = "select m from Member m, Team t where m.username = t.name";
-			List<Member> result = em.createQuery(query, Member.class) 
+			String query = "select m.username, 'HELLO', TRUE from Member m" +
+					" where m.type = :userType";
+			
+			List<Object[]> result = em.createQuery(query)
+					// 보통 아래처럼 사용하므로 패키지명 포함하는 형식으로 잘 사용하지 않게됨!
+					.setParameter("userType", MemberType.ADMIN)
 					.getResultList(); 
 			
 			System.out.println("result = " + result.size());
-			for (Member member1 : result) {
-				System.out.println("member1 = " + member1);
+			
+			for (Object[] objects : result) {
+				System.out.println("member1 = " + objects[0]);
+				System.out.println("member1 = " + objects[1]);
+				System.out.println("member1 = " + objects[2]);
 			}
 			
 			tx.commit();
