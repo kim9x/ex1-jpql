@@ -54,31 +54,37 @@ public class JpaMain {
 			
 			em.flush();
 			em.clear();
-						
-//			String query = "select m from Member m join fetch m.team";
-			String query = "select distinct t from Team t join fetch t.members";
-
+			
+			
+			// Member 엔티티를 직접 parameter로 넣어주면
+			// PK로 지정된 값을 사용한다.
+//			String query = "select m from Member m where m = :member";
+//			
 //			List<Member> result = em.createQuery(query, Member.class)
+//					.setParameter("member", member1)
 //					.getResultList();
 			
-			List<Team> result = em.createQuery(query, Team.class)
+			// 위와 같은 쿼리가 나간다 .
+//			String query = "select m from Member m where m.id = :memberId";
+//			
+//			List<Member> result = em.createQuery(query, Member.class)
+//					.setParameter("memberId", member1.getId())
+//					.getResultList();
+			
+			// 외래 값을 parameter로 넣어주면
+			// 외래 키 값의 joinclumn으로 설정된 값을 사용한다.
+			String query2 = "select m from Member m where m.team = :team";
+			
+			List<Member> result2 = em.createQuery(query2, Member.class)
+					.setParameter("team", teamA)
 					.getResultList();
 			
-//			for (Member member : result) {
-//				System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
-//				// 회원1, 팀A(SQL)
-//				// 회원2, 팀A(1차캐시)
-//				// 회원3, 팀B(SQL)
-//				
-//				// 회원 100명 -> N + 1
-//			}
+//			String query2 = "select m from Member m where m.teamId = :teamId";
+//			
+//			List<Member> result2 = em.createQuery(query2, Member.class)
+//					.setParameter("teamId", teamA.getId())
+//					.getResultList();
 			
-			for (Team team : result) {
-				System.out.println("team = " + team.getName() + ", " + team.getMembers().size());
-				for ( Member member : team.getMembers() ) {
-					System.out.println("-> member = " + member);
-				}
-			}
 			
 			tx.commit();
 			
