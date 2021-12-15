@@ -55,35 +55,13 @@ public class JpaMain {
 			em.flush();
 			em.clear();
 			
-			
-			// Member 엔티티를 직접 parameter로 넣어주면
-			// PK로 지정된 값을 사용한다.
-//			String query = "select m from Member m where m = :member";
-//			
-//			List<Member> result = em.createQuery(query, Member.class)
-//					.setParameter("member", member1)
-//					.getResultList();
-			
-			// 위와 같은 쿼리가 나간다 .
-//			String query = "select m from Member m where m.id = :memberId";
-//			
-//			List<Member> result = em.createQuery(query, Member.class)
-//					.setParameter("memberId", member1.getId())
-//					.getResultList();
-			
-			// 외래 값을 parameter로 넣어주면
-			// 외래 키 값의 joinclumn으로 설정된 값을 사용한다.
-			String query2 = "select m from Member m where m.team = :team";
-			
-			List<Member> result2 = em.createQuery(query2, Member.class)
-					.setParameter("team", teamA)
+			List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+					.setParameter("username", "회원1")
 					.getResultList();
 			
-//			String query2 = "select m from Member m where m.teamId = :teamId";
-//			
-//			List<Member> result2 = em.createQuery(query2, Member.class)
-//					.setParameter("teamId", teamA.getId())
-//					.getResultList();
+			for(Member member : resultList) {
+				System.out.println("member = " + member);
+			}
 			
 			
 			tx.commit();
