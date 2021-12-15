@@ -84,7 +84,7 @@ public class JpaMain {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
-			tx.rollback();	
+			tx.rollback();
 			e.printStackTrace();
 		} finally { 
 			emf.close();

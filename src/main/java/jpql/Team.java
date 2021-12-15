@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.BatchSize;
+
 @Entity 
 public class Team {
 	
@@ -16,6 +18,8 @@ public class Team {
 	
 	private String name;
 	
+	// @BatchSize는 'persistence.xml'에서 글로벌 세팅해줄 수 있다.
+	@BatchSize(size = 100)
 	@OneToMany(mappedBy = "team")
 	private List<Member> members = new ArrayList<Member>();
 
